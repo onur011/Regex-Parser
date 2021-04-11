@@ -1,0 +1,148 @@
+    Veis Onur Sener
+        336CB
+
+    Tema 3 - LFA
+
+    1) Task 1 (ER - AFN):
+
+        Se considera gramatica:
+
+        E <- R | R REUNION E
+        R <- C | C CONCATENATION R
+        C <- Atom | C KLEEN
+        Atom <- Letter | Iner
+        Letter <- LEETTERS
+        Iner <- OPEN E CLOSE
+
+        Initial, in etapa lexicala, se construieste lista cu tokeni din inputul
+        fisierului.
+
+        In etapa sintactica, se genereaza arborele de parsare.
+
+        Functia parse:
+            
+            - Se parcurge lista de tokeni, utilizand PDA creat conform gramaticii.
+            
+            - Pentru fiecare token se determina starea urmatoare, daca ea exista,
+            urmand ca dupa sa se aplice regurile de reducere, daca acestea sunt valide.
+            
+            - In urma parcurgerii, daca exista mai mult de un element in stiva sau
+            daca PDA nu se afla intr-o stare finala sau nu a fost parcurs tot cuvantul
+            inseamna ca acel cuvant nu este acceptat.
+
+        Functia reduce:
+
+            - Se determina daca se utilizeaza reguli de reducere.
+
+            - In functie de elementele din stiva si din cuvant, se determina
+            ce regula de reducere se poate aplica.
+
+        Functia nextState:
+
+            - Se pargurc tranzitiile PDA pana se identifica tranzitiile
+            pe starea curenta cu simbolul curent.
+
+            - Se adauga elementul stivei, daca aceste este diferit de epsilon.
+
+            - Se returneaza starea urmatoare, in cazul in care exista.
+
+        Dupa generarea arborelui, se contruieste NFA.
+
+        Functia GenNFA:
+            
+            - Pentru fiecare tip de expresie, se genereaza un nfa conform
+            regulilor prezentate la curs:
+
+                Pentru simbol:
+                    - Se contruieste un NFA cu doua stari si o tranzitie pe
+                    simbolul respectiv
+
+                Pentru concatenare:
+                    - Se construieste un NFA care insumneaza cele 2 nfa.
+
+                    - Starea initiala este starea initiala a nfa din stanga,
+                    iar starea finala este starea finala a nfa din dreapta.
+
+                    - Cele doua sunt "legate" printr-o tranzitie pe epsilon.
+
+                Pentru reuniune:
+                    - Se construieste un NFA care insumneaza cele 2 nfa.
+
+                    - Se construieste o noua stare initial care are tranzitie
+                    pe epsilon in cele doua stari initiala.
+
+                    - Se construieste o noua stare finala.
+
+                    - Starile finala ajung in noua stare finala prin tranzitii
+                    pe epsilon.
+
+                Pentru kleen star:
+                    - Se construieste un NFA.
+
+                    - Se adauga o noua stare initiala si finala.
+
+                    - Noua stare initiala are tranzitie pe epsilon in vechea stare
+                    initiala si in noua stare finala.
+
+                    - Vechea stare finala are tranzitie pe epsilon in noua stare
+                    finala si in vechea stare initiala.
+
+        Dupa generarea nfa, se lucreaza la asezarea acestuia pentru a se putea utiliza
+        codul dezvoltat la tema 2 (nfa -> dfa).
+
+        Se afiseaza nfa conform cerintei.
+
+    1) Task 2 (AFN - AFD):
+
+    Se calculeaza epsilon pentru fiecare stare din automat.
+
+        Functia det_epsilon(delta_nfa,s):
+        - In cazul in care starea a fost deja vizitata, se iese din functie
+        - Se adauga starea ca fiind vizitata
+        - Daca starea nu are salturi catre alta stare, se opreste functia
+        - Se parcurg toate drumurile starii respective
+        - Daca se gaseste cel putin un drum pe epsilon, se apeleaza
+        recursiv functia pentru starile urmatoare.
+        - Rezultatul functie este memorat in lista E_one_state
+
+        Se incepe generarea DFA cu starile determinate de epsilonul
+    starii initiale.
+
+        Se ia cate o stare din dfa_states, se verifica daca nu a mai fost 
+        selectata.
+    
+        Se selecteaza fiecare caracter din alfabet.
+
+        Se selecteaza fiecare stare, din starea curenta, daca aceasta 
+    este o stare compusa.
+
+        Se verifica daca starea are drumuri care pleaca din ea.
+
+        Se extrag drumurile pentru starea respectiva si pentru fiecare drum
+    se memoreaza epsilonul starii in care se ajunge, pe simbolul respectiv.
+
+        Dupa ce se executa codul de mai sus, luandu-se fiecare stare din
+    starea curenta, se memoreaza starile la care se ajunge pe simbolul ales.
+
+        De asemenea, starile memorate anterior sunt adaugate in dfa_states,
+    urmand sa fie prelucrate si ele.
+
+        Dupa ce s-au parcurs toate simbolurile, se memoreaza noua stare
+    in dfa.
+
+        Algoritmul este reluat pana cand dfa_states este vida.
+
+        De asemenea, se observa ca in cazul in care o stare nu are drum pe un
+    simbol, algortimul va genera automat calea catre starea '' (sirul vid),
+    aceastea reprezentand sink state.
+
+        Se genereaza starile finale ale dfa, luandu-se fiecare stare a lui
+    si verificand daca ea contine cel putin o stare finala a nfa.
+
+        Se scriu in fisier numarul de stari si starile finale ale dfa.
+
+        Se scrie fiecare stare cu simbolul si starile urmatoare.
+
+        In selected_states se regasesc toate starile dfa sub forma de string.
+        Pentru o vizualizare mai buna, se codifica fiecare string
+    cu indicele din lista selected_states.
